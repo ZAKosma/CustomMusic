@@ -1,4 +1,4 @@
-# Custom Music — Battlestar Galactica: Scattered Hopes
+# Custom Music — Battlestar Galactica: Scratched Vinyls
 
 My second mod for *Battlestar Galactica: Scattered Hopes* (see also
 [Extra Rerolls](../../)). This one lets you swap the game's built-in music
