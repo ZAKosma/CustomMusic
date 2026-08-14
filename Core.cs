@@ -25,6 +25,34 @@ namespace CustomMusic
         private const string ASSET_ROOT = "CustomMusicAssets";
         private static readonly string[] SupportedExtensions = { "*.wav", "*.mp3", "*.ogg" };
 
+        // This build is music-only: folders are only created (and overrides
+        // only checked) for these contexts, even though ContextByGuid still
+        // maps all ~150 discovered events. That keeps the full discovery/
+        // mapping logic reusable for a future ambient/SFX mod — just add
+        // names here (or swap this for a different whitelist) to widen scope.
+        // Names must match AudioConfiguration's field names exactly, which
+        // is what the "Known contexts" log line prints on first launch.
+        internal static readonly HashSet<string> MusicContexts = new HashSet<string>
+        {
+            "MainMusicTitleScreenEventRef",
+            "MainMusicRecap",
+            "MainMusicFleetEventRef",
+            "MainMusicGameOver",
+            "MainMusicCombatListEventRef",
+            "MainMusicCombatBossFirstAndSecondEventRef",
+            "MainMusicCombatBossFinalEventRef",
+            "MainMusicMetaUpgradeEventRef",
+            "MainMusicTechnicalInteriorsEventRef",
+            "MainMusicVictoryEventRef",
+            "MainMusicBarEventRef",
+            "MainMusicVisionEventRef",
+            // Ambient beds — not music, left out by default. Uncomment to include:
+            // "AmbientCic",
+            // "AmbientHangar",
+            // "AmbientSecurity",
+            // "AmbientScienceLab",
+        };
+
         // Populated once from AudioConfiguration's own EventReference fields —
         // no manual list of context names to keep in sync with the game.
         internal static readonly Dictionary<Guid, string> ContextByGuid = new Dictionary<Guid, string>();
@@ -39,9 +67,26 @@ namespace CustomMusic
         // --- Preferences ---
         private static MelonPreferences_Category prefsCategory;
         private static MelonPreferences_Entry<string> playbackOrderEntry;
+        private static MelonPreferences_Entry<float> introFadeSecondsEntry;
+        private static MelonPreferences_Entry<float> outroFadeSecondsEntry;
+        private static MelonPreferences_Entry<float> hastenedFadeSecondsEntry;
 
         internal static bool IsAlphabeticalOrder =>
             string.Equals(playbackOrderEntry?.Value, "Alphabetical", StringComparison.OrdinalIgnoreCase);
+
+        // How long a fresh incoming track takes to fade up to full volume.
+        internal static float IntroFadeSeconds => introFadeSecondsEntry?.Value ?? 5f;
+
+        // How long the outgoing track takes to fade to silence the FIRST time
+        // it's superseded by a new context.
+        internal static float OutroFadeSeconds => outroFadeSecondsEntry?.Value ?? 5f;
+
+        // If a track is ALREADY fading out and yet another new context arrives
+        // before it finishes, its remaining fade is hastened to this (shorter)
+        // duration instead of continuing at the normal Outro pace — keeps
+        // rapid trigger chains (e.g. flapping between two contexts) from
+        // stacking up several slowly-dying tracks at once.
+        internal static float HastenedFadeSeconds => hastenedFadeSecondsEntry?.Value ?? 1f;
 
         public override void OnInitializeMelon()
         {
@@ -80,7 +125,32 @@ namespace CustomMusic
                 LoggerInstance.Warning($"CustomMusic: PlaybackOrder value '{playbackOrderEntry.Value}' not recognized — falling back to Shuffle. Valid values are 'Shuffle' or 'Alphabetical'.");
             }
 
-            LoggerInstance.Msg($"CustomMusic: PlaybackOrder = '{playbackOrderEntry.Value}'.");
+            introFadeSecondsEntry = prefsCategory.CreateEntry(
+                "IntroFadeSeconds",
+                5f,
+                "Intro Fade Seconds",
+                "How long (in seconds) an incoming track takes to fade up to full volume when a game trigger switches context.");
+
+            outroFadeSecondsEntry = prefsCategory.CreateEntry(
+                "OutroFadeSeconds",
+                5f,
+                "Outro Fade Seconds",
+                "How long (in seconds) the outgoing track takes to fade to silence the first time it's superseded. Independent from IntroFadeSeconds — set both the same (e.g. 5, or 6-7 for a slower blend) to match a symmetric crossfade.");
+
+            hastenedFadeSecondsEntry = prefsCategory.CreateEntry(
+                "HastenedFadeSeconds",
+                1f,
+                "Hastened Fade Seconds",
+                "If a track is already fading out and another new context arrives before it finishes, its remaining fade is sped up to this shorter duration instead of continuing at OutroFadeSeconds — keeps rapid back-to-back triggers from stacking up multiple slowly-dying tracks.");
+
+            if (introFadeSecondsEntry.Value < 0f || outroFadeSecondsEntry.Value < 0f || hastenedFadeSecondsEntry.Value < 0f)
+            {
+                LoggerInstance.Warning("CustomMusic: one or more fade-seconds preferences is negative — treated as an instant cut (0) at runtime.");
+            }
+
+            LoggerInstance.Msg($"CustomMusic: PlaybackOrder = '{playbackOrderEntry.Value}', " +
+                                $"IntroFadeSeconds = {introFadeSecondsEntry.Value}, OutroFadeSeconds = {outroFadeSecondsEntry.Value}, " +
+                                $"HastenedFadeSeconds = {hastenedFadeSecondsEntry.Value}.");
         }
 
         private void PatchInstanceMethod(Type declaringType, string methodName, string postfixMethodName, Type[] paramTypes = null)
@@ -135,13 +205,14 @@ namespace CustomMusic
 
             CreateContextFolders();
 
-            MelonLogger.Msg($"CustomMusic: discovered {ContextByGuid.Values.Distinct().Count()} music contexts and " +
-                             $"created their folders under 'Mods/{ASSET_ROOT}/'. Drop any {string.Join("/", SupportedExtensions)} " +
-                             $"file(s) into a context's folder to override it — with PlaybackOrder='{playbackOrderEntry.Value}', " +
-                             $"multiple files in a folder will be picked accordingly. For a parameter-driven crossfade instead, " +
-                             $"name files stem_0.ogg, stem_1.ogg, stem_2.ogg... (low to high intensity) — stem order always " +
-                             $"follows the numeric suffix regardless of PlaybackOrder. " +
-                             $"Known contexts: {string.Join(", ", ContextByGuid.Values.Distinct())}");
+            MelonLogger.Msg($"CustomMusic: discovered {ContextByGuid.Values.Distinct().Count()} total audio contexts; " +
+                             $"this is a music-only build, so folders were created for {MusicContexts.Count} of them under " +
+                             $"'Mods/{ASSET_ROOT}/'. Drop any {string.Join("/", SupportedExtensions)} file(s) into a context's " +
+                             $"folder to override it — with PlaybackOrder='{playbackOrderEntry.Value}', multiple files in a " +
+                             $"folder will be picked accordingly. For a parameter-driven crossfade instead, name files " +
+                             $"stem_0.ogg, stem_1.ogg, stem_2.ogg... (low to high intensity) — stem order always follows " +
+                             $"the numeric suffix regardless of PlaybackOrder. " +
+                             $"Music contexts: {string.Join(", ", MusicContexts)}");
         }
 
         // Pre-creates an empty folder for every known context so the user
@@ -154,6 +225,8 @@ namespace CustomMusic
 
             foreach (var contextName in ContextByGuid.Values.Distinct())
             {
+                if (!MusicContexts.Contains(contextName)) continue;
+
                 try
                 {
                     Directory.CreateDirectory(Path.Combine(root, contextName));
@@ -236,6 +309,16 @@ namespace CustomMusic
 
         private static void TryOverride(AudioManager audioManager, ref EventInstance stockInstance, EventReference stockRef, bool isAmbient, string callSite)
         {
+            // Music-only build: never touch the ambient slot at all — leave it
+            // fully vanilla. At least one scene (the Bar) routes the exact same
+            // FMOD event GUID through both ChangeMusicIfNeeded AND
+            // ChangeAmbientIfNeeded. Overriding both created two independent
+            // playing copies of the same replacement track simultaneously, and
+            // because ambient context changes are infrequent, the ambient copy
+            // could linger for a long time (or indefinitely) with no further
+            // call to fade it out — heard as a track that "didn't crossfade."
+            if (isAmbient) return;
+
             Core.EnsureContextMapBuilt();
             string bucketId = isAmbient ? "ambient" : "music";
 
@@ -247,6 +330,10 @@ namespace CustomMusic
                     MelonLogger.Msg($"CustomMusic [{callSite}]: encountered unmapped music event (guid={stockRef.Guid}).");
                 return;
             }
+
+            // Music-only build: silently ignore anything outside the whitelist
+            // (SFX/UI/ambient events resolve fine but we never act on them here).
+            if (!Core.MusicContexts.Contains(context)) return;
 
             if (Core.Controller == null)
             {
@@ -299,25 +386,45 @@ namespace CustomMusic
             public Sound sound;
             public FMOD.Channel channel;
             public float currentVolume;
-            public float targetVolume;
+            // Crossfade weight from OnParameterChanged (0..1), independent of
+            // the layer's overall in/out fade — the two are multiplied together
+            // each frame in Update().
+            public float weight;
         }
 
-        private class Lane
+        // One "voice" — either a single discrete sound or a stem group — tied
+        // to a specific context. A lane can hold several layers at once: the
+        // current one fading in, and any number of previous ones still fading
+        // out. Each layer owns its own FMOD resources for its whole lifetime,
+        // so a new layer starting never touches an older layer's channel —
+        // that overwrite was the bug causing tracks to stack up and overlap.
+        private class Layer
         {
-            public string bucketId;
-            public string activeContext;
+            public string context;
+            public float fadeTarget = 1f; // 1 = fading in / held; 0 = fading out, remove when silent
+
+            // Null = use Core.IntroFadeSeconds / Core.OutroFadeSeconds normally.
+            // Set when a fade-out gets hastened because yet another new context
+            // arrived before this layer finished dying — see FadeOutAllLayers.
+            public float? fadeDurationOverride;
 
             // Discrete mode
+            public bool isStem;
             public Sound sound;
             public FMOD.Channel channel;
-            public float fadeTarget = 1f;
 
             // Stem mode
             public List<StemChannel> stems;
         }
 
-        private readonly Dictionary<string, Lane> lanes = new Dictionary<string, Lane>();
-        private const float FadeDuration = 1.0f;
+        private class LaneState
+        {
+            public string bucketId;
+            public string activeContext; // context we currently intend to be playing (null once stopped)
+            public readonly List<Layer> layers = new List<Layer>();
+        }
+
+        private readonly Dictionary<string, LaneState> lanes = new Dictionary<string, LaneState>();
 
         // Playback-order bookkeeping, keyed by context name.
         private readonly Dictionary<string, int> rotationIndexByContext = new Dictionary<string, int>();
@@ -325,22 +432,45 @@ namespace CustomMusic
 
         public bool IsOverriding(string bucketId)
         {
-            if (!lanes.TryGetValue(bucketId, out var lane)) return false;
-            if (lane.activeContext == null) return false;
-            return lane.channel.hasHandle() || (lane.stems != null && lane.stems.Count > 0);
+            return lanes.TryGetValue(bucketId, out var lane) && lane.activeContext != null;
         }
 
         public void PlayContext(string bucketId, string context, string[] candidateFiles)
         {
+            if (!lanes.TryGetValue(bucketId, out var lane))
+            {
+                lane = new LaneState { bucketId = bucketId };
+                lanes[bucketId] = lane;
+            }
+
+            bool alreadyActive = lane.activeContext == context &&
+                                  lane.layers.Any(l => l.context == context && l.fadeTarget == 1f);
+            if (alreadyActive)
+            {
+                MelonLogger.Msg($"CustomMusic: lane '{bucketId}' already playing context '{context}' — no restart needed.");
+                return;
+            }
+
+            // Fade out whatever's currently in the lane (old active layer, plus
+            // any earlier layer still finishing its own fade-out) while the new
+            // one starts fading in at the same time — a short overlap, not a
+            // silent gap. Each layer still owns its own FMOD resources for its
+            // whole life, so this never touches the old layer's channel directly.
+            FadeOutAllLayers(lane);
+
             var stemFiles = candidateFiles
                 .Where(f => Regex.IsMatch(Path.GetFileNameWithoutExtension(f), @"^stem_\d+$"))
                 .OrderBy(ExtractStemIndex)
                 .ToArray();
 
-            if (stemFiles.Length >= 2)
-                PlayStemLane(bucketId, context, stemFiles);
-            else
-                PlayDiscreteLane(bucketId, context, candidateFiles);
+            Layer newLayer = stemFiles.Length >= 2
+                ? BuildStemLayer(bucketId, context, stemFiles)
+                : BuildDiscreteLayer(bucketId, context, candidateFiles);
+
+            if (newLayer == null) return; // load failure already logged
+
+            lane.layers.Add(newLayer);
+            lane.activeContext = context;
         }
 
         private static int ExtractStemIndex(string path)
@@ -383,29 +513,15 @@ namespace CustomMusic
             }
         }
 
-        private void PlayDiscreteLane(string bucketId, string context, string[] candidateFiles)
+        private Layer BuildDiscreteLayer(string bucketId, string context, string[] candidateFiles)
         {
-            if (!lanes.TryGetValue(bucketId, out var lane))
-            {
-                lane = new Lane { bucketId = bucketId };
-                lanes[bucketId] = lane;
-            }
-
-            if (lane.activeContext == context && lane.channel.hasHandle())
-            {
-                MelonLogger.Msg($"CustomMusic: lane '{bucketId}' already playing context '{context}' — no restart needed.");
-                return;
-            }
-
-            StopLane(lane);
-
             string chosenFile = ChooseFile(context, candidateFiles);
             MODE mode = MODE.CREATESTREAM | MODE.LOOP_NORMAL;
             RESULT result = RuntimeManager.CoreSystem.createSound(chosenFile, mode, out Sound newSound);
             if (result != RESULT.OK)
             {
                 MelonLogger.Error($"CustomMusic: failed to load '{chosenFile}' for lane '{bucketId}' ({result}).");
-                return;
+                return null;
             }
             newSound.setLoopCount(-1);
 
@@ -413,26 +529,13 @@ namespace CustomMusic
             RuntimeManager.CoreSystem.playSound(newSound, group, paused: false, out FMOD.Channel newChannel);
             newChannel.setVolume(0f);
 
-            lane.sound = newSound;
-            lane.channel = newChannel;
-            lane.activeContext = context;
-            lane.fadeTarget = 1f;
-
             MelonLogger.Msg($"CustomMusic: lane '{bucketId}' now playing '{Path.GetFileName(chosenFile)}' for context '{context}' (fading in, order={(Core.IsAlphabeticalOrder ? "Alphabetical" : "Shuffle")}).");
+
+            return new Layer { context = context, isStem = false, sound = newSound, channel = newChannel, fadeTarget = 1f };
         }
 
-        private void PlayStemLane(string bucketId, string context, string[] stemFiles)
+        private Layer BuildStemLayer(string bucketId, string context, string[] stemFiles)
         {
-            if (!lanes.TryGetValue(bucketId, out var lane))
-            {
-                lane = new Lane { bucketId = bucketId };
-                lanes[bucketId] = lane;
-            }
-            if (lane.activeContext == context && lane.stems != null && lane.stems.Count > 0) return;
-
-            StopLane(lane);
-            lane.stems = new List<StemChannel>();
-
             ChannelGroup group;
             try
             {
@@ -441,9 +544,10 @@ namespace CustomMusic
             catch (Exception ex)
             {
                 MelonLogger.Error($"CustomMusic: RuntimeManager.CoreSystem.getMasterChannelGroup threw — {ex}");
-                return;
+                return null;
             }
 
+            var stems = new List<StemChannel>();
             foreach (var file in stemFiles)
             {
                 try
@@ -458,7 +562,7 @@ namespace CustomMusic
                     sound.setLoopCount(-1);
                     RuntimeManager.CoreSystem.playSound(sound, group, paused: false, out FMOD.Channel ch);
                     ch.setVolume(0f);
-                    lane.stems.Add(new StemChannel { sound = sound, channel = ch, currentVolume = 0f, targetVolume = 0f });
+                    stems.Add(new StemChannel { sound = sound, channel = ch, currentVolume = 0f, weight = 0f });
                     MelonLogger.Msg($"CustomMusic: stem loaded OK — '{Path.GetFileName(file)}'.");
                 }
                 catch (Exception ex)
@@ -467,32 +571,39 @@ namespace CustomMusic
                 }
             }
 
-            lane.activeContext = context;
-            if (lane.stems.Count > 0) lane.stems[0].targetVolume = 1f;
+            if (stems.Count > 0) stems[0].weight = 1f;
 
-            MelonLogger.Msg($"CustomMusic: lane '{bucketId}' loaded {lane.stems.Count} stem(s) for context '{context}'.");
+            MelonLogger.Msg($"CustomMusic: lane '{bucketId}' loaded {stems.Count} stem(s) for context '{context}' (fading in).");
+
+            return new Layer { context = context, isStem = true, stems = stems, fadeTarget = 1f };
         }
 
-        // Drives crossfade position from a float parameter. Clamped to 0..1
-        // for now — check the log for "observed parameter" lines to see the
-        // real authored range and adjust the normalization below if needed.
+        // Drives crossfade position from a float parameter. Applies to every
+        // live stem layer across all lanes (a layer that's fading out stays
+        // silent regardless, since its overall fadeTarget is 0 and multiplies
+        // the weight to zero in Update()). Clamped to 0..1 for now — check the
+        // log for "observed parameter" lines to see the real authored range
+        // and adjust the normalization below if needed.
         public void OnParameterChanged(string parameterName, float value)
         {
             foreach (var lane in lanes.Values)
             {
-                if (lane.stems == null || lane.stems.Count < 2) continue;
-
-                float t = Mathf.Clamp01(value);
-                float scaled = t * (lane.stems.Count - 1);
-                int lowerIndex = Mathf.FloorToInt(scaled);
-                float frac = scaled - lowerIndex;
-
-                for (int i = 0; i < lane.stems.Count; i++)
+                foreach (var layer in lane.layers)
                 {
-                    float vol = 0f;
-                    if (i == lowerIndex) vol = 1f - frac;
-                    else if (i == lowerIndex + 1) vol = frac;
-                    lane.stems[i].targetVolume = vol;
+                    if (!layer.isStem || layer.stems == null || layer.stems.Count < 2) continue;
+
+                    float t = Mathf.Clamp01(value);
+                    float scaled = t * (layer.stems.Count - 1);
+                    int lowerIndex = Mathf.FloorToInt(scaled);
+                    float frac = scaled - lowerIndex;
+
+                    for (int i = 0; i < layer.stems.Count; i++)
+                    {
+                        float w = 0f;
+                        if (i == lowerIndex) w = 1f - frac;
+                        else if (i == lowerIndex + 1) w = frac;
+                        layer.stems[i].weight = w;
+                    }
                 }
             }
         }
@@ -506,24 +617,36 @@ namespace CustomMusic
 
         public void StopIfPlayingBucket(string bucketId)
         {
-            if (lanes.TryGetValue(bucketId, out var lane))
-                StopLane(lane);
+            if (!lanes.TryGetValue(bucketId, out var lane)) return;
+            FadeOutAllLayers(lane);
+            lane.activeContext = null;
         }
 
-        private void StopLane(Lane lane)
+        private void FadeOutAllLayers(LaneState lane)
         {
-            if (lane.activeContext == null) return;
-
-            MelonLogger.Msg($"CustomMusic: lane '{lane.bucketId}' fading out context '{lane.activeContext}'.");
-
-            if (lane.channel.hasHandle())
+            foreach (var layer in lane.layers)
             {
-                lane.fadeTarget = 0f;
-            }
-            if (lane.stems != null)
-            {
-                foreach (var stem in lane.stems)
-                    stem.targetVolume = 0f;
+                bool alreadyFadingOut = layer.fadeTarget == 0f;
+                if (alreadyFadingOut)
+                {
+                    // This layer was already on its way out from a previous
+                    // supersede, and now yet another new context has arrived —
+                    // speed up its remaining fade so it clears quickly rather
+                    // than continuing to linger at the normal (often slower)
+                    // Outro pace while the newer track is also trying to fade
+                    // in. Repeated triggers can only make this faster, never
+                    // slower.
+                    float hasten = Mathf.Max(0.01f, Core.HastenedFadeSeconds);
+                    layer.fadeDurationOverride = layer.fadeDurationOverride.HasValue
+                        ? Mathf.Min(layer.fadeDurationOverride.Value, hasten)
+                        : hasten;
+                }
+                else
+                {
+                    MelonLogger.Msg($"CustomMusic: lane '{lane.bucketId}' fading out context '{layer.context}'.");
+                    layer.fadeTarget = 0f;
+                    layer.fadeDurationOverride = null; // first time fading out — use the normal Outro pace
+                }
             }
         }
 
@@ -535,52 +658,86 @@ namespace CustomMusic
 
             foreach (var lane in lanes.Values)
             {
-                // Discrete single-track fade
-                if (lane.channel.hasHandle())
+                if (lane.layers.Count == 0) continue;
+
+                // Snapshot so we can remove finished layers while iterating.
+                foreach (var layer in lane.layers.ToArray())
                 {
-                    lane.channel.getVolume(out float current);
-                    float next = Mathf.MoveTowards(current, lane.fadeTarget, Time.deltaTime / FadeDuration);
-                    lane.channel.setVolume(next * userVolume);
+                    bool finished;
 
-                    if (lane.fadeTarget == 0f && next <= 0.001f)
-                    {
-                        string finishedContext = lane.activeContext;
-                        lane.channel.stop();
-                        lane.sound.release();
-                        lane.channel = default;
-                        lane.activeContext = null;
-                        MelonLogger.Msg($"CustomMusic: lane '{lane.bucketId}' finished fade-out and released audio for context '{finishedContext}'.");
-                    }
-                }
+                    if (layer.isStem)
+                        finished = UpdateStemLayer(layer, userVolume);
+                    else
+                        finished = UpdateDiscreteLayer(layer, userVolume);
 
-                // Stem crossfade
-                if (lane.stems != null && lane.stems.Count > 0)
-                {
-                    bool allSilent = true;
-                    foreach (var stem in lane.stems)
+                    if (finished)
                     {
-                        if (!stem.channel.hasHandle()) continue;
-                        stem.currentVolume = Mathf.MoveTowards(stem.currentVolume, stem.targetVolume, Time.deltaTime / FadeDuration);
-                        stem.channel.setVolume(stem.currentVolume * userVolume);
-                        if (stem.currentVolume > 0.001f) allSilent = false;
-                    }
-
-                    // If every stem has faded to silence (e.g. after StopLane),
-                    // release them all and clear the lane's stem state.
-                    if (allSilent && lane.stems.All(s => s.targetVolume == 0f))
-                    {
-                        string finishedContext = lane.activeContext;
-                        foreach (var stem in lane.stems)
-                        {
-                            if (stem.channel.hasHandle()) stem.channel.stop();
-                            stem.sound.release();
-                        }
-                        lane.stems.Clear();
-                        lane.activeContext = null;
-                        MelonLogger.Msg($"CustomMusic: lane '{lane.bucketId}' finished stem fade-out and released audio for context '{finishedContext}'.");
+                        lane.layers.Remove(layer);
+                        MelonLogger.Msg($"CustomMusic: lane '{lane.bucketId}' finished fade-out and released audio for context '{layer.context}'.");
                     }
                 }
             }
+        }
+
+        // Which duration governs this layer's current fade: a hastened
+        // override (already-superseded fade-out) takes priority; otherwise
+        // it's IntroFadeSeconds while fading in (fadeTarget == 1) or
+        // OutroFadeSeconds while fading out (fadeTarget == 0).
+        private static float ResolveFadeDuration(Layer layer)
+        {
+            if (layer.fadeDurationOverride.HasValue) return layer.fadeDurationOverride.Value;
+            return layer.fadeTarget >= 1f ? Core.IntroFadeSeconds : Core.OutroFadeSeconds;
+        }
+
+        // Returns true once this discrete layer has fully faded out and its
+        // FMOD resources have been released (i.e. it's safe to drop).
+        private bool UpdateDiscreteLayer(Layer layer, float userVolume)
+        {
+            if (!layer.channel.hasHandle()) return true;
+
+            layer.channel.getVolume(out float current);
+            float duration = Mathf.Max(0.01f, ResolveFadeDuration(layer));
+            float next = Mathf.MoveTowards(current, layer.fadeTarget, Time.deltaTime / duration);
+            layer.channel.setVolume(next * userVolume);
+
+            if (layer.fadeTarget == 0f && next <= 0.001f)
+            {
+                layer.channel.stop();
+                layer.sound.release();
+                layer.channel = default;
+                return true;
+            }
+            return false;
+        }
+
+        // Returns true once every stem in this layer has faded to silence and
+        // been released.
+        private bool UpdateStemLayer(Layer layer, float userVolume)
+        {
+            if (layer.stems == null || layer.stems.Count == 0) return true;
+
+            bool allSilent = true;
+            foreach (var stem in layer.stems)
+            {
+                if (!stem.channel.hasHandle()) continue;
+                float target = stem.weight * layer.fadeTarget;
+                float duration = Mathf.Max(0.01f, ResolveFadeDuration(layer));
+                stem.currentVolume = Mathf.MoveTowards(stem.currentVolume, target, Time.deltaTime / duration);
+                stem.channel.setVolume(stem.currentVolume * userVolume);
+                if (stem.currentVolume > 0.001f) allSilent = false;
+            }
+
+            if (allSilent && layer.fadeTarget == 0f)
+            {
+                foreach (var stem in layer.stems)
+                {
+                    if (stem.channel.hasHandle()) stem.channel.stop();
+                    stem.sound.release();
+                }
+                layer.stems.Clear();
+                return true;
+            }
+            return false;
         }
     }
 }
