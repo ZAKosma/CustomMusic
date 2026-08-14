@@ -1,0 +1,532 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<RootNamespace>CustomMusic</RootNamespace>
+		<LangVersion>default</LangVersion>
+		<IsPackable>false</IsPackable>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<FileVersion>1.0.0.0</FileVersion>
+		<NeutralLanguage>en-US</NeutralLanguage>
+		<AssemblyName>CustomMusic</AssemblyName>
+		<LangVersion>latest</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Reference Include="AltShift.Collections">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.Collections.dll</HintPath>
+		</Reference>
+		<Reference Include="AltShift.Collections.ModifiableAttributes">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.Collections.ModifiableAttributes.dll</HintPath>
+		</Reference>
+		<Reference Include="AltShift.Collections.Octree">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.Collections.Octree.dll</HintPath>
+		</Reference>
+		<Reference Include="AltShift.Collections.Pooling">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.Collections.Pooling.dll</HintPath>
+		</Reference>
+		<Reference Include="AltShift.Communication">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.Communication.dll</HintPath>
+		</Reference>
+		<Reference Include="AltShift.Debug.Assertions">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.Debug.Assertions.dll</HintPath>
+		</Reference>
+		<Reference Include="AltShift.Debug">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.Debug.dll</HintPath>
+		</Reference>
+		<Reference Include="AltShift.GameObjects">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.GameObjects.dll</HintPath>
+		</Reference>
+		<Reference Include="AltShift.GameObjects.Extensions">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.GameObjects.Extensions.dll</HintPath>
+		</Reference>
+		<Reference Include="AltShift.Internationalization">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.Internationalization.dll</HintPath>
+		</Reference>
+		<Reference Include="AltShift.LifeCycle">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.LifeCycle.dll</HintPath>
+		</Reference>
+		<Reference Include="AltShift.Maths">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.Maths.dll</HintPath>
+		</Reference>
+		<Reference Include="AltShift.Platforms">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.Platforms.dll</HintPath>
+		</Reference>
+		<Reference Include="AltShift.Productivity">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.Productivity.dll</HintPath>
+		</Reference>
+		<Reference Include="AltShift.Serialization">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.Serialization.dll</HintPath>
+		</Reference>
+		<Reference Include="AltShift.Social">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.Social.dll</HintPath>
+		</Reference>
+		<Reference Include="AltShift.UI.Async">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.UI.Async.dll</HintPath>
+		</Reference>
+		<Reference Include="AltShift.UI">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.UI.dll</HintPath>
+		</Reference>
+		<Reference Include="AltShift.URP">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\AltShift.URP.dll</HintPath>
+		</Reference>
+		<Reference Include="Assembly-CSharp-firstpass">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+		</Reference>
+		<Reference Include="Assembly-CSharp">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Assembly-CSharp.dll</HintPath>
+		</Reference>
+		<Reference Include="CodeStage.AFPSCounter.Runtime">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\CodeStage.AFPSCounter.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="com.rlabrecque.steamworks.net">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\com.rlabrecque.steamworks.net.dll</HintPath>
+		</Reference>
+		<Reference Include="DOTween">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\DOTween.dll</HintPath>
+		</Reference>
+		<Reference Include="DOTween.Modules">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\DOTween.Modules.dll</HintPath>
+		</Reference>
+		<Reference Include="Febucci.Attributes.Runtime">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Febucci.Attributes.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Febucci.TextAnimator.Runtime">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Febucci.TextAnimator.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Febucci.TextAnimator.TMP.Runtime">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Febucci.TextAnimator.TMP.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="FMODUnity">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\FMODUnity.dll</HintPath>
+		</Reference>
+		<Reference Include="FMODUnityResonance">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\FMODUnityResonance.dll</HintPath>
+		</Reference>
+		<Reference Include="GalaxyCSharp">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\GalaxyCSharp.dll</HintPath>
+		</Reference>
+		<Reference Include="LitJson">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\LitJson.dll</HintPath>
+		</Reference>
+		<Reference Include="Newtonsoft.Json">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Newtonsoft.Json.dll</HintPath>
+		</Reference>
+		<Reference Include="Sirenix.OdinInspector.Attributes">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Sirenix.OdinInspector.Attributes.dll</HintPath>
+		</Reference>
+		<Reference Include="Sirenix.OdinInspector.Modules.Unity.Addressables">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Sirenix.OdinInspector.Modules.Unity.Addressables.dll</HintPath>
+		</Reference>
+		<Reference Include="spine-csharp">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\spine-csharp.dll</HintPath>
+		</Reference>
+		<Reference Include="spine-unity-examples">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\spine-unity-examples.dll</HintPath>
+		</Reference>
+		<Reference Include="spine-unity">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\spine-unity.dll</HintPath>
+		</Reference>
+		<Reference Include="UniTask.Addressables">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UniTask.Addressables.dll</HintPath>
+		</Reference>
+		<Reference Include="UniTask">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UniTask.dll</HintPath>
+		</Reference>
+		<Reference Include="UniTask.DOTween">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UniTask.DOTween.dll</HintPath>
+		</Reference>
+		<Reference Include="UniTask.Linq">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UniTask.Linq.dll</HintPath>
+		</Reference>
+		<Reference Include="UniTask.TextMeshPro">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UniTask.TextMeshPro.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.2D.Common.Runtime">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.2D.Common.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Addressables">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Addressables.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Burst">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Burst.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Burst.Unsafe">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Burst.Unsafe.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Collections">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Collections.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Collections.LowLevel.ILSupport">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.InputSystem">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.InputSystem.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.InputSystem.ForUI">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.InputSystem.ForUI.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.InternalAPIEngineBridge.001">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.InternalAPIEngineBridge.001.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Mathematics">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Mathematics.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.PlayerPrefsEditor.Samples.SampleScene">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.PlayerPrefsEditor.Samples.SampleScene.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Profiling.Core">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Profiling.Core.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Recorder.Base">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Recorder.Base.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Recorder">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Recorder.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Rendering.LightTransport.Runtime">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Rendering.LightTransport.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.RenderPipelines.Core.Runtime">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.RenderPipelines.Core.Runtime.Shared">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.RenderPipelines.Core.Runtime.Shared.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.RenderPipelines.Core.ShaderLibrary">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.RenderPipelines.GPUDriven.Runtime">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.RenderPipelines.GPUDriven.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.RenderPipelines.Universal.2D.Runtime">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.RenderPipelines.Universal.2D.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.RenderPipelines.Universal.Config.Runtime">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.RenderPipelines.Universal.Config.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.RenderPipelines.Universal.Runtime">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.RenderPipelines.Universal.Shaders">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.RenderPipelines.Universal.Shaders.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.ResourceManager">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.ResourceManager.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.ScriptableBuildPipeline">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.ScriptableBuildPipeline.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Services.Analytics">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Services.Analytics.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Services.CloudDiagnostics">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Services.CloudDiagnostics.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Services.Core.Analytics">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Services.Core.Analytics.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Services.Core.Components">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Services.Core.Components.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Services.Core.Configuration">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Services.Core.Configuration.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Services.Core.Device">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Services.Core.Device.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Services.Core">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Services.Core.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Services.Core.Environments">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Services.Core.Environments.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Services.Core.Environments.Internal">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Services.Core.Environments.Internal.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Services.Core.Internal">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Services.Core.Internal.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Services.Core.Networking">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Services.Core.Networking.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Services.Core.Registration">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Services.Core.Registration.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Services.Core.Scheduler">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Services.Core.Scheduler.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Services.Core.Telemetry">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Services.Core.Telemetry.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Services.Core.Threading">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Services.Core.Threading.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.TextMeshPro">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Timeline">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.Timeline.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.VisualEffectGraph.Runtime">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\Unity.VisualEffectGraph.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AccessibilityModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.AccessibilityModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AIModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.AIModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AMDModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.AMDModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AndroidJNIModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.AndroidJNIModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AnimationModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ARModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.ARModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AssetBundleModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AudioModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ClothModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.ClothModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.CloudBuild">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.CloudBuild.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ClusterInputModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.ClusterInputModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ClusterRendererModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.ClusterRendererModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ContentLoadModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.ContentLoadModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.CrashReportingModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.CrashReportingModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.DirectorModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.DirectorModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.DSPGraphModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.DSPGraphModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.GameCenterModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.GameCenterModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.GIModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.GIModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.GraphicsStateCollectionSerializerModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.GraphicsStateCollectionSerializerModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.GridModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.GridModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.HierarchyCoreModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.HierarchyCoreModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.HotReloadModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.HotReloadModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ImageConversionModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.IMGUIModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.InputForUIModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.InputForUIModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.InputLegacyModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.InputModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.InputModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.JSONSerializeModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.LocalizationModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.LocalizationModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.MarshallingModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.MarshallingModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.MultiplayerModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.MultiplayerModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.NVIDIAModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.NVIDIAModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ParticleSystemModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.PerformanceReportingModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.PerformanceReportingModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.Physics2DModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.PhysicsModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.PropertiesModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.PropertiesModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ScreenCaptureModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.ScreenCaptureModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ShaderVariantAnalyticsModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.ShaderVariantAnalyticsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.SharedInternalsModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.SharedInternalsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.SpriteMaskModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.SpriteMaskModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.SpriteShapeModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.SpriteShapeModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.StreamingModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.StreamingModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.SubstanceModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.SubstanceModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.SubsystemsModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.SubsystemsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TerrainModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.TerrainModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TerrainPhysicsModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.TerrainPhysicsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TextCoreFontEngineModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.TextCoreFontEngineModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TextCoreTextEngineModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.TextCoreTextEngineModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TextRenderingModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TilemapModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.TilemapModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TLSModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.TLSModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UI">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.UI.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UIElementsModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UIModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UmbraModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.UmbraModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityAnalyticsCommonModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.UnityAnalyticsCommonModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityAnalyticsModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.UnityAnalyticsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityConnectModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.UnityConnectModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityCurlModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.UnityCurlModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityTestProtocolModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.UnityTestProtocolModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestAudioModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.UnityWebRequestModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestTextureModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestWWWModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.VehiclesModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.VehiclesModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.VFXModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.VFXModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.VideoModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.VideoModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.VirtualTexturingModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.VirtualTexturingModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.VRModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.VRModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.WindModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.WindModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.XRModule">
+			<HintPath>$(GamePath)/BattlestarGalacticaScatteredHopes_Data\Managed\UnityEngine.XRModule.dll</HintPath>
+		</Reference>
+		<Reference Include="MelonLoader">
+			<HintPath>$(GamePath)/MelonLoader\net35\MelonLoader.dll</HintPath>
+		</Reference>
+		<Reference Include="0Harmony">
+			<HintPath>$(GamePath)/MelonLoader\net35\0Harmony.dll</HintPath>
+		</Reference>
+
+	</ItemGroup>
+
+	<PropertyGroup>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="Core.cs" />
+		<Content Include="Directory.Build.props" />
+	</ItemGroup>
+	
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(GamePath)/Mods&quot;" />
+	</Target>
+</Project>
